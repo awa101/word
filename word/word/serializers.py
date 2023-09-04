@@ -4,10 +4,6 @@ from .models import KrWord, KrMeaning, KrExample, JpWord, JpExample, JpMeaning, 
 
 # simple serializers 
 # KR
-class KrWordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = KrWord
-        fields = '__all__'
 
 
 class KrMeaningSerializer(serializers.ModelSerializer):
@@ -20,6 +16,14 @@ class KrExampleSerializer(serializers.ModelSerializer):
     class Meta:
         model = KrExample
         fields = ['example', 'order', 'numbering']
+
+
+
+class KrWordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = KrWord
+        fields = ['word', 'hangeul', 'sound', 'numbering']
 
 
 # JP
@@ -61,7 +65,7 @@ class CnExampleSerializer(serializers.ModelSerializer):
 
 # word + meanings
 class KrWordMeaningSerializer(serializers.ModelSerializer):
-    krmeanings = serializers.SerializerMethodField()
+    krmeanings = KrMeaningSerializer(many=True, read_only=True, source='krmeaning_set')
     jpmeanings = serializers.SerializerMethodField()
     cnmeanings = serializers.SerializerMethodField()
 
@@ -69,26 +73,19 @@ class KrWordMeaningSerializer(serializers.ModelSerializer):
         model = KrWord
         fields = ['word', 'hangeul', 'sound', 'numbering', 'krmeanings', 'jpmeanings', 'cnmeanings']
 
-    def get_krmeanings(self, obj):
-        num = obj.numbering
-        krword = KrWord.objects.get(numbering=num)
-        krmeaning = krword.krmeaning_set.all()
-        serialier = KrMeaningSerializer(krmeaning, many=True)
-        return serialier.data
-    
+
     def get_jpmeanings(self, obj):
-        num = obj.numbering
-        jpword = JpWord.objects.get(numbering=num)
+        jpword = JpWord.objects.get(numbering=obj.numbering)
         jpmeaning = jpword.jpmeaning_set.all()
         serializer = JpMeaningSerializer(jpmeaning, many=True)
         return serializer.data
     
     def get_cnmeanings(self, obj):
-        num = obj.numbering
-        cnword = CnWord.objects.get(numbering=num)
+        cnword = CnWord.objects.get(numbering=obj.numbering)
         cnmeaning = cnword.cnmeaning_set.all()
         serializer = CnMeaningSerializer(cnmeaning, many=True)
         return serializer.data
+    
     
 
 # just tried word + mixed meanings
@@ -142,15 +139,8 @@ class KrMeaningExampleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = KrMeaning
-        fields = ['word', 'meaning', 'meaning_numbering', 'numbering', 'examples']
+        fields = ['word', 'meaning', 'order', 'numbering', 'examples']
 
     def get_examples(self, obj):
         examples = KrExample.objects.filter(meaning=obj)
         return KrExampleSerializer(examples, many=True).data
-
-
-
-
-
-
-
