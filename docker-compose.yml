@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: mysql
+    image: mysql
+
+    environment:
+      MYSQL_DATABASE: word
+      MYSQL_USER: madmik
+      MYSQL_PASSWORD: madmik
+      MYSQL_ROOT_PASSWORD: 1234
+
+    volumes:
+      - mysql_data:/var/lib/mysql # 네임드 볼륨
+    ports:
+      - "3306:3306"
+    restart: always 
+
+  web:
+    container_name: web 
+    build:
+      context: ./word
+      dockerfile: Dockerfile
+
+    volumes:
+      - ./word:/word
+      - logs:/var/log
+    
+  nginx:
+    container_name: nginx 
+
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+      
+    restart: always  
+
+
+volumes: # 네임드 볼륨 선언
+  mysql_data:
+  logs:

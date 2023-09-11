@@ -25,6 +25,8 @@ SECRET_KEY = 'django-insecure-tr1#huv1q+_+@f#%5u14o4om*flns=fj%7g8&8bfjxj7*h@_bu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+# deployment: ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com', 'ip_address']
 ALLOWED_HOSTS = ['*']
 
 
@@ -45,12 +47,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -81,9 +83,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'word', # DB 이름
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1',
+        'USER': 'madmik',
+        'PASSWORD': 'madmik',
+        'HOST': 'db',
         'PORT': '3306',
     }
 }
@@ -130,7 +132,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
+CORS_ALLOW_HEADERS = ["*"]
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOW_ALL_ORIGINS = True
 
-PAGE_SIZE = 10
+PAGE_SIZE = 20

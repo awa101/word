@@ -5,7 +5,6 @@ from .models import KrWord, KrMeaning, KrExample, JpWord, JpExample, JpMeaning, 
 # simple serializers 
 # KR
 
-
 class KrMeaningSerializer(serializers.ModelSerializer):
     class Meta:
         model = KrMeaning
@@ -61,6 +60,37 @@ class CnExampleSerializer(serializers.ModelSerializer):
         fields = ['example', 'order', 'numbering']
 
 
+# word combine
+class ComWordSerializer(serializers.Serializer):
+    krword = KrWordSerializer()
+    jpword = JpWordSerializer()
+    cnword = CnWordSerializer()
+
+
+# all combine
+class ComSerializer(serializers.Serializer):
+    krword = KrWordSerializer()
+    jpword = JpWordSerializer()
+    cnword = CnWordSerializer()
+
+    krmeaning = KrMeaningSerializer(many=True)
+    jpmeaning = JpMeaningSerializer(many=True)
+    cnmeaning = CnMeaningSerializer(many=True)
+
+
+
+# meaning combine
+class ComMeaningSerializer(serializers.Serializer):
+    krmeaning = KrMeaningSerializer(many=True)
+    jpmeaning = JpMeaningSerializer(many=True)
+    cnmeaning = CnMeaningSerializer(many=True)
+
+# ex combine
+class ComExSerializer(serializers.Serializer):
+    krexample = KrExampleSerializer(many=True)
+    jpexample = JpExampleSerializer(many=True)
+    cnexample = CnExampleSerializer(many=True)
+
 
 
 # word + meanings
@@ -88,6 +118,9 @@ class KrWordMeaningSerializer(serializers.ModelSerializer):
     
     
 
+
+
+'''
 # just tried word + mixed meanings
 class KrCombinedMeaningSerializer(serializers.ModelSerializer):
     combined_meanings = serializers.SerializerMethodField()
@@ -144,3 +177,4 @@ class KrMeaningExampleSerializer(serializers.ModelSerializer):
     def get_examples(self, obj):
         examples = KrExample.objects.filter(meaning=obj)
         return KrExampleSerializer(examples, many=True).data
+'''
