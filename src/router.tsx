@@ -1,7 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Root from "./components/Root";
+
+import WordProvider from './components/WordProvider';
 import Kr from "./routes/Kr";
-import Jp from "./routes/Jp";
+import WordDetail from "./routes/WordDetail";
 import NotFound from "./routes/NotFound";
 import Main from "./routes/main";
 
@@ -10,22 +12,30 @@ import Main from "./routes/main";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Root />,
+        element: (
+            <WordProvider>
+              <Root />
+            </WordProvider>
+          ),
         errorElement: <NotFound />,
         children: [
             {
                 path: "",
-                element: <Main />,
+                element: <Kr />,
               },        
             {
-                path:"kr",
-                element: <Kr />,
+                path:":numbering",
+                element: <WordDetail />,
 
             },
             {
-                path:"Jp",
-                element: <Jp />,
-            }
+              path:"today", 
+              element: <Main />
+          },       
+          {
+            path: "not-found",
+            element: <NotFound />
+          },    
         ]
     },
 ]);
